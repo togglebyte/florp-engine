@@ -1,4 +1,6 @@
-# Florp engine: a terminal based game engine
+# Florp engine: a terminal based drawing / game library
+
+Supports viewports, cameras, and general drawing of characters.
 
 ## Example:
 
