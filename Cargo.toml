@@ -5,7 +5,7 @@ authors = ["Togglebit <me@togglebit.io>"]
 edition = "2018"
 description = "terminal drawing / game library"
 license-file = "LICENSE"
-repository = "github.com/togglebyte/tinybit"
+repository = "https://github.com/togglebyte/tinybit"
 keywords = ["terminal", "drawing"]
 
 [dependencies]
