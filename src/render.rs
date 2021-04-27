@@ -47,9 +47,6 @@ fn setup_terminal_for_stdout_target() -> Result<Stdout> {
 //     - Reset terminal from stdout target -
 // -----------------------------------------------------------------------------
 fn reset_terminal_from_stdout_target(stdout: &mut Stdout) -> Result<()> {
-    // Do we need to show the cursor too, or does that get handled
-    // automatically by crossterm?
-
     stdout.execute(cursor::Show)?;
     stdout.execute(LeaveAlternateScreen)?;
     disable_raw_mode()?;
