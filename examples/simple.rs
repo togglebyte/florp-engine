@@ -30,6 +30,7 @@ fn main() {
                 let pixel = Pixel::new(player.0, camera.to_screen(player.1), None, None);
                 viewport.draw_pixel(pixel);
                 let _ = renderer.render(&mut viewport);
+                // viewport.swap_buffers();
             }
             Event::Key(KeyEvent { code: KeyCode::Esc, ..  }) => break,
             Event::Key(KeyEvent { code: kc, .. }) => {

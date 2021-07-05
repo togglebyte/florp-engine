@@ -14,6 +14,11 @@ pub struct Viewport {
     pub size: ScreenSize,
     new_buf: PixelBuffer,
     old_buf: PixelBuffer,
+    dirty: bool,
+    // Store a cached buffer that can be returned when calling `pixels()`.
+    // This buffer is updated every time `self.dirty` is true and a call
+    // to `pixels()` is made.
+    buf: Vec<Pixel>,
 }
 
 impl Viewport {
@@ -24,6 +29,8 @@ impl Viewport {
             size,
             new_buf: PixelBuffer::new(size),
             old_buf: PixelBuffer::new(size),
+            dirty: true,
+            buf: Vec::new(),
         }
     }
 
@@ -34,6 +41,7 @@ impl Viewport {
         self.size = ScreenSize::new(width, height);
         self.new_buf = PixelBuffer::new(self.size);
         self.old_buf = PixelBuffer::new(self.size);
+        self.dirty = true;
     }
 
     /// Draw the pixels onto the renderable surface layers.
@@ -42,6 +50,7 @@ impl Viewport {
         pixels.into_iter().for_each(|pixel| {
             self.draw_pixel(*pixel);
         });
+        self.dirty = true;
     }
 
     /// Draw a single pixel onto the rendereable surface layers.
@@ -52,6 +61,7 @@ impl Viewport {
         if self.in_view(pixel.pos) {
             self.new_buf.set_pixel(pixel);
         }
+        self.dirty = true;
     }
 
     /// Draw a widget with an offset in the viewport.
@@ -71,37 +81,43 @@ impl Viewport {
         ScreenPos::new(pos.x + self.position.x, pos.y + self.position.y)
     }
 
-    pub(crate) fn pixels(&mut self) -> Vec<Pixel> {
-        let mut pixels = Vec::<Pixel>::new();
-
-        for (new, old) in self
-            .new_buf
-            .pixels
-            .iter()
-            .enumerate()
-            .zip(&self.old_buf.pixels)
-        {
-            match (new, old) {
-                ((index, Some(pixel)), _) => {
-                    let pos = self.offset(self.new_buf.index_to_coords(index));
-                    let mut pixel = *pixel;
-                    pixel.pos = pos;
-                    pixels.push(pixel);
-                }
-                ((index, None), Some(_)) => {
-                    let pos = self.offset(self.new_buf.index_to_coords(index));
-                    pixels.push(Pixel::white(' ', pos));
-                }
-                ((_, None), None) => {}
-            }
-        }
-
+    pub fn swap_buffers(&mut self) {
         swap(&mut self.new_buf, &mut self.old_buf);
         self.new_buf.pixels.iter_mut().for_each(|opt| {
             opt.take();
         });
+        self.dirty = true;
+    }
 
-        pixels
+    pub(crate) fn pixels(&mut self) -> impl Iterator<Item = &Pixel> {
+        if self.dirty {
+            let mut pixels = Vec::<Pixel>::new();
+
+            for (new, old) in self
+                .new_buf
+                .pixels
+                .iter()
+                .enumerate()
+                .zip(&self.old_buf.pixels)
+            {
+                match (new, old) {
+                    ((index, Some(pixel)), _) => {
+                        let pos = self.offset(self.new_buf.index_to_coords(index));
+                        let mut pixel = *pixel;
+                        pixel.pos = pos;
+                        pixels.push(pixel);
+                    }
+                    ((index, None), Some(_)) => {
+                        let pos = self.offset(self.new_buf.index_to_coords(index));
+                        pixels.push(Pixel::white(' ', pos));
+                    }
+                    ((_, None), None) => {}
+                }
+            }
+            self.buf = pixels;
+        }
+
+        self.buf.iter()
     }
 }
 
@@ -151,7 +167,7 @@ mod test {
         let c = Pixel::new('C', ScreenPos::new(2, 7), None, None);
         let d = Pixel::new('D', ScreenPos::new(7, 7), None, None);
 
-        let drawn_pixels = view.pixels();
+        let drawn_pixels = view.pixels().cloned().collect::<Vec<_>>();
 
         assert_eq!(&drawn_pixels, &[a, b, c, d]);
     }

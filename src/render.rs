@@ -70,7 +70,7 @@ impl<T: RenderTarget> Renderer<T> {
 
     /// Draw characters to screen
     pub fn render(&mut self, viewport: &mut Viewport) {
-        self.target.render(viewport.pixels().iter());
+        self.target.render(viewport.pixels());
     }
 
     /// Clear the screen
