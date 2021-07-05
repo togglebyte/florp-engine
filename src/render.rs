@@ -70,7 +70,7 @@ impl<T: RenderTarget> Renderer<T> {
 
     /// Draw characters to screen
     pub fn render(&mut self, viewport: &mut Viewport) {
-        self.target.render(viewport.pixels());
+        self.target.render(viewport.pixels().iter());
     }
 
     /// Clear the screen
@@ -84,7 +84,7 @@ impl<T: RenderTarget> Renderer<T> {
 // -----------------------------------------------------------------------------
 /// Something that a render can render to.
 pub trait RenderTarget {
-    fn render(&mut self, pixels: Vec<Pixel>);
+    fn render<'a, P: Iterator<Item=&'a Pixel>>(&'a mut self, pixels: P);
     fn clear(&mut self);
 }
 
@@ -118,7 +118,7 @@ impl StdoutTarget {
 }
 
 impl RenderTarget for StdoutTarget {
-    fn render(&mut self, pixels: Vec<Pixel>) {
+    fn render<'a, P: Iterator<Item=&'a Pixel>>(&'a mut self, pixels: P) {
         for pixel in pixels {
             self.stdout
                 .queue(MoveTo(pixel.pos.x, pixel.pos.y))
@@ -170,7 +170,7 @@ impl Drop for StdoutTarget {
 pub struct DummyTarget;
 
 impl RenderTarget for DummyTarget {
-    fn render(&mut self, _pixels: Vec<Pixel>) {}
+    fn render<'a, P: Iterator<Item=&'a Pixel>>(&'a mut self, _: P) {}
     fn clear(&mut self) {}
 }
 
@@ -196,8 +196,8 @@ mod test {
     }
 
     impl RenderTarget for DummyTarget {
-        fn render(&mut self, pixels: Vec<Pixel>) {
-            self.pixels = pixels;
+        fn render<'a, P: Iterator<Item=&'a Pixel>>(&'a mut self, pixels: P) {
+            self.pixels = pixels.cloned().collect();
         }
 
         fn clear(&mut self) {}

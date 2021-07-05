@@ -38,8 +38,8 @@ impl Viewport {
 
     /// Draw the pixels onto the renderable surface layers.
     /// This is offset by the camera and the viewport.
-    pub fn draw_pixels(&mut self, pixels: Vec<Pixel>) {
-        pixels.iter().for_each(|pixel| {
+    pub fn draw_pixels(&mut self, pixels: &[Pixel]) {
+        pixels.into_iter().for_each(|pixel| {
             self.draw_pixel(*pixel);
         });
     }
@@ -144,7 +144,7 @@ mod test {
             .map(|(p, g)| Pixel::new(g, cam.to_screen(p), None, None))
             .collect::<Vec<_>>();
 
-        view.draw_pixels(pixels);
+        view.draw_pixels(&pixels);
 
         let a = Pixel::new('A', ScreenPos::new(2, 2), None, None);
         let b = Pixel::new('B', ScreenPos::new(7, 2), None, None);

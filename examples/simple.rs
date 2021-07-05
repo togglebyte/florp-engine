@@ -15,7 +15,7 @@ fn main() {
     let (width, height) = (width as f32, height as f32);
     let camera_size = WorldSize::new(width / 2.0, height / 2.0); let camera_pos =
     WorldPos::new(width, height);
-    let mut camera = Camera::new(camera_pos, camera_size);
+    let camera = Camera::new(camera_pos, camera_size);
 
     // Renderer
     let stdout_renderer = StdoutTarget::new().expect("Failed to enter raw mode");
@@ -41,7 +41,7 @@ fn main() {
                     _ => {}
                 }
             }
-            Event::Resize(w, h) => {}
+            Event::Resize(_w, _h) => {}
         }
     }
 }

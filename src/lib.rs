@@ -1,11 +1,11 @@
 // #![deny(missing_docs)]
 //! Terminal game engine
 //! ```
-//! # use tinybit::events::{events, Event, KeyCode, KeyEvent, EventModel};
-//! # use tinybit::{
-//! #     term_size, Camera, Renderer, ScreenPos, ScreenSize, StdoutTarget, Viewport,
-//! #     WorldPos, WorldSize, Pixel
-//! # };
+//! use tinybit::events::{events, Event, KeyCode, KeyEvent, EventModel};
+//! use tinybit::{
+//!     term_size, Camera, Renderer, ScreenPos, ScreenSize, StdoutTarget, Viewport,
+//!     WorldPos, WorldSize, Pixel
+//! };
 //! 
 //! fn main() {
 //!     let (width, height) = term_size().expect("Can't get the term size? Can't play the game!");
