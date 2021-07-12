@@ -13,8 +13,8 @@ fn main() {
 
     // Camera
     let (width, height) = (width as f32, height as f32);
-    let camera_size = WorldSize::new(width / 2.0, height / 2.0); let camera_pos =
-    WorldPos::new(width, height);
+    let camera_size = WorldSize::new(width / 2.0, height / 2.0);
+    let camera_pos = WorldPos::new(width, height);
     let camera = Camera::new(camera_pos, camera_size);
 
     // Renderer
@@ -30,7 +30,7 @@ fn main() {
                 let pixel = Pixel::new(player.0, camera.to_screen(player.1), None, None);
                 viewport.draw_pixel(pixel);
                 let _ = renderer.render(&mut viewport);
-                // viewport.swap_buffers();
+                viewport.swap_buffers();
             }
             Event::Key(KeyEvent { code: KeyCode::Esc, ..  }) => break,
             Event::Key(KeyEvent { code: kc, .. }) => {

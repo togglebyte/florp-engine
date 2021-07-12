@@ -64,7 +64,8 @@ impl Border {
     /// H      D
     /// GFFFFFFE
     /// ```
-    pub fn new(s: String, fg_color: Option<Color>, bg_color: Option<Color>) -> Self {
+    pub fn new(s: impl Into<String>, fg_color: Option<Color>, bg_color: Option<Color>) -> Self {
+        let s = s.into();
         debug_assert!(s.chars().count() >= 8);
         Self { s, fg_color, bg_color }
     }

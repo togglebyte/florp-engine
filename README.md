@@ -2,6 +2,11 @@
 
 Supports viewports, cameras, and general drawing of characters.
 
+## Screenshot:
+
+![Screenshot](https://user-images.githubusercontent.com/74262215/125284921-546cbf80-e31a-11eb-9e36-c007d0d99ec0.png)
+
+
 ## Example:
 
 ```rust
@@ -19,8 +24,8 @@ fn main() {
     let mut viewport = Viewport::new(ScreenPos::new(0, 4), viewport_size);
 
     // Camera
-    let camera_size = WorldSize::new(width / 2, height / 2); let camera_pos =
-    WorldPos::new(width, height);
+    let camera_size = WorldSize::new(width / 2, height / 2);
+    let camera_pos = WorldPos::new(width, height);
     let mut camera = Camera::new(camera_pos, camera_size);
 
     // Renderer
@@ -36,6 +41,7 @@ fn main() {
                 let pixel = (player.0, camera.to_screen(player.1));
                 viewport.draw_pixel(pixel);
                 let _ = renderer.render(&mut viewport);
+                viewport.swap_buffers();
             }
             Event::Key(KeyEvent { code: KeyCode::Esc, ..  }) => break,
             Event::Key(KeyEvent { code: kc, .. }) => {
