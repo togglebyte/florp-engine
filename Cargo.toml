@@ -9,6 +9,6 @@ repository = "https://github.com/togglebyte/tinybit"
 keywords = ["terminal", "drawing"]
 
 [dependencies]
-crossterm = { version = "0.19.0", features = ["serde"] }
+crossterm = { version = "0.21.0", features = ["serde"] }
 serde_json = "1.0.62"
 serde = "1.0.123"
