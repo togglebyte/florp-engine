@@ -52,6 +52,7 @@
 //! }
 //! ```
 
+#[cfg(feature = "derive")]
 use serde::{Deserialize, Serialize};
 
 mod pixelbuffer;
@@ -63,7 +64,8 @@ pub mod render;
 pub mod widgets;
 
 /// A character at a position, with a colour
-#[derive(Debug, Copy, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq)]
+#[cfg_attr(feature = "derive", derive(Serialize, Deserialize))]
 pub struct Pixel {
     pub glyph: char,
     pub pos: ScreenPos,
@@ -101,7 +103,8 @@ pub use viewport::Viewport;
 //     - Euclid -
 // -----------------------------------------------------------------------------
 /// A position on screen, where 0,0 is the top left corner
-#[derive(Serialize, Deserialize, Debug, Copy, Clone, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq)]
+#[cfg_attr(feature = "derive", derive(Serialize, Deserialize))]
 pub struct ScreenPos {
     pub x: u16,
     pub y: u16,
@@ -118,7 +121,8 @@ impl ScreenPos {
 }
 
 /// A position in the world
-#[derive(Serialize, Deserialize, Debug, Copy, Clone, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq)]
+#[cfg_attr(feature = "derive", derive(Serialize, Deserialize))]
 pub struct WorldPos {
     pub x: i64,
     pub y: i64,
@@ -135,7 +139,8 @@ impl WorldPos {
 }
 
 /// A rect on screen
-#[derive(Serialize, Deserialize, Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone)]
+#[cfg_attr(feature = "derive", derive(Serialize, Deserialize))]
 pub struct ScreenRect {
     pub origin: ScreenPos,
     pub size: ScreenSize,
@@ -148,7 +153,8 @@ impl ScreenRect {
 }
 
 /// A rect in the world
-#[derive(Serialize, Deserialize, Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone)]
+#[cfg_attr(feature = "derive", derive(Serialize, Deserialize))]
 pub struct WorldRect {
     pub origin: WorldPos,
     pub size: WorldSize,
@@ -177,7 +183,8 @@ impl WorldRect {
 }
 
 /// A size on screen
-#[derive(Serialize, Deserialize, Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone)]
+#[cfg_attr(feature = "derive", derive(Serialize, Deserialize))]
 pub struct ScreenSize {
     pub width: u16,
     pub height: u16,
@@ -190,7 +197,8 @@ impl ScreenSize {
 }
 
 /// A size in the world
-#[derive(Serialize, Deserialize, Debug, Copy, Clone, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq)]
+#[cfg_attr(feature = "derive", derive(Serialize, Deserialize))]
 pub struct WorldSize {
     pub width: i64,
     pub height: i64,

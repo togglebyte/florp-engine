@@ -8,7 +8,11 @@ license-file = "LICENSE"
 repository = "https://github.com/togglebyte/tinybit"
 keywords = ["terminal", "drawing"]
 
+[features]
+default = []
+derive = ["serde", "serde_json", "crossterm/serde"]
+
 [dependencies]
-crossterm = { version = "0.21.0", features = ["serde"] }
-serde_json = "1.0.62"
-serde = "1.0.123"
+crossterm = { version = "0.21.0" }
+serde_json = { version = "1.0.62", optional = true }
+serde = { version = "1.0.123", optional = true }
