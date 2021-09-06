@@ -127,7 +127,7 @@ mod test {
     use crate::*;
 
     fn camera(viewport: &Viewport) -> Camera<camera::NoLimit> {
-        let pos = WorldPos::new(30.0, 30.0);
+        let pos = WorldPos::new(30, 30);
         Camera::from_viewport(pos, viewport)
     }
 
@@ -148,9 +148,9 @@ mod test {
         let max_y = cam.bounding_box.max_y();
 
         let a = WorldPos::new(min_x, min_y);
-        let b = WorldPos::new(max_x - 1.0, min_y);
-        let c = WorldPos::new(min_x, max_y - 1.0);
-        let d = WorldPos::new(max_x - 1.0, max_y - 1.0);
+        let b = WorldPos::new(max_x - 1, min_y);
+        let c = WorldPos::new(min_x, max_y - 1);
+        let d = WorldPos::new(max_x - 1, max_y - 1);
 
         let positions = vec![a, b, c, d];
         let glyphs = vec!['A', 'B', 'C', 'D'];

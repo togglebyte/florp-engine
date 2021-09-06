@@ -1,8 +1,13 @@
 //! A collection of widgets.
 //!
 //! ```
+//! # use tinybit::{ScreenPos, Viewport};
 //! use tinybit::widgets::Text;
+//! # fn run(mut viewport: Viewport) {
 //! let text = Text::new("Hello, World", None, None);
+//! let offset = ScreenPos::zero();
+//! viewport.draw_widget(&text, offset);
+//! # }
 //! ```
 use crate::{Color, Pixel, ScreenPos, ScreenSize};
 use crate::events::{KeyCode, KeyEvent};
@@ -46,6 +51,15 @@ impl Widget for Text {
 // -----------------------------------------------------------------------------
 /// Render a border.
 /// See the `new` function for more details.
+/// ```
+/// use tinybit::widgets::Border;
+/// # use tinybit::{Viewport, ScreenPos, Color};
+/// # fn run(mut viewport: Viewport) {
+/// let fg_color = Some(Color::Green);
+/// let border = Border::thin(fg_color, None);
+/// viewport.draw_widget(&border, ScreenPos::zero());
+/// # }
+/// ```
 pub struct Border {
     s: String,
     fg_color: Option<Color>,
@@ -68,6 +82,17 @@ impl Border {
         let s = s.into();
         debug_assert!(s.chars().count() >= 8);
         Self { s, fg_color, bg_color }
+    }
+
+    /// Create a new "thin" border
+    /// ```text
+    /// ╭───────╮
+    /// │       │
+    /// ╰───────╯
+    /// ```
+    pub fn thin(fg_color: Option<Color>, bg_color: Option<Color>) -> Self {
+        let border_chars = "╭─╮│╯─╰│";
+        Self::new(border_chars, fg_color, bg_color)
     }
 }
 

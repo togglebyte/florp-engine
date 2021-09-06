@@ -180,8 +180,8 @@ mod test {
     use crate::*;
 
     fn camera() -> Camera<camera::NoLimit> {
-        let pos = WorldPos::new(30.0, 30.0);
-        let size = WorldSize::new(6.0, 6.0);
+        let pos = WorldPos::new(30, 30);
+        let size = WorldSize::new(6, 6);
         Camera::new(pos, size)
     }
 

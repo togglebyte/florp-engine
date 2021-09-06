@@ -1,10 +1,10 @@
 use crate::{ScreenPos, Viewport, WorldPos, WorldRect, WorldSize};
 
 pub struct Limit {
-    top: f32,
-    right: f32,
-    bottom: f32,
-    left: f32,
+    top: i64,
+    right: i64,
+    bottom: i64,
+    left: i64,
 }
 
 pub struct NoLimit;
@@ -21,8 +21,8 @@ pub struct Camera<T> {
 
 impl<T> Camera<T> {
     /// Resize the camera
-    pub fn resize(&mut self, width: u16, height: u16) {
-        self.size = WorldSize::new(width as f32, height as f32);
+    pub fn resize(&mut self, new_size: WorldSize) {
+        self.size = new_size;
     }
 
     /// Convert a point to local space.
@@ -44,8 +44,8 @@ impl<T> Camera<T> {
         // Bounding box
         self.bounding_box = WorldRect::new(
             WorldPos::new(
-                self.position.x - (self.size.width / 2.0),
-                self.position.y - (self.size.height / 2.0),
+                self.position.x - (self.size.width / 2),
+                self.position.y - (self.size.height / 2),
             ),
             self.size,
         );
@@ -56,14 +56,14 @@ impl<T> Camera<T> {
 impl Camera<NoLimit> {
     /// Create a new camera at a specific world position, with a fixed size.
     pub fn from_viewport(position: WorldPos, viewport: &Viewport) -> Camera<NoLimit> {
-        let size = WorldSize::new(viewport.size.width as f32, viewport.size.height as f32);
+        let size = WorldSize::new(viewport.size.width as i64, viewport.size.height as i64);
         Self::new(position, size)
     }
 
     /// Create a new camera
     pub fn new(position: WorldPos, size: WorldSize) -> Camera<NoLimit> {
         let bounding_box = WorldRect::new(
-            WorldPos::new(position.x - size.width / 2.0, position.y - size.height / 2.0),
+            WorldPos::new(position.x - size.width / 2, position.y - size.height / 2),
             size,
         );
 
@@ -88,10 +88,10 @@ impl Camera<NoLimit> {
     pub fn with_limit(self, top: u16, right: u16, bottom: u16, left: u16) -> Camera<Limit> {
         Camera {
             limit: Limit {
-                top: top as f32,
-                right: right as f32,
-                bottom: bottom as f32,
-                left: left as f32,
+                top: top as i64,
+                right: right as i64,
+                bottom: bottom as i64,
+                left: left as i64,
             },
             position: self.position,
             bounding_box: self.bounding_box,
@@ -127,8 +127,8 @@ mod test {
     use super::*;
 
     fn camera() -> Camera<NoLimit> {
-        let pos = WorldPos::new(3.0, 3.0);
-        let size = WorldSize::new(6.0, 6.0);
+        let pos = WorldPos::new(3, 3);
+        let size = WorldSize::new(6, 6);
         Camera::new(pos, size)
     }
 
@@ -142,7 +142,7 @@ mod test {
     #[test]
     fn move_camera() {
         let mut cam = camera();
-        let dest = WorldPos::new(100.0, 100.0);
+        let dest = WorldPos::new(100, 100);
         cam.move_to(dest);
         assert_eq!(dest, cam.position);
     }
@@ -150,37 +150,37 @@ mod test {
     #[test]
     fn track_point() {
         let mut cam = camera();
-        cam.move_to(WorldPos::new(100.0, 100.0));
+        cam.move_to(WorldPos::new(100, 100));
         let mut cam = cam.with_limit(2, 2, 2, 2);
 
         let cam_pos = cam.position;
 
-        cam.track(WorldPos::new(102.0, 98.0));
+        cam.track(WorldPos::new(102, 98));
         assert_eq!(cam_pos, cam.position);
 
         // Don't move
-        cam.move_to(WorldPos::new(100.0, 100.0));
-        cam.track(WorldPos::new(100.0, 100.0));
-        assert_eq!(WorldPos::new(100.0, 100.0), cam.position);
+        cam.move_to(WorldPos::new(100, 100));
+        cam.track(WorldPos::new(100, 100));
+        assert_eq!(WorldPos::new(100, 100), cam.position);
 
         // Move left
-        cam.move_to(WorldPos::new(100.0, 100.0));
-        cam.track(WorldPos::new(97.0, 98.0));
-        assert_eq!(WorldPos::new(99.0, 100.0), cam.position);
+        cam.move_to(WorldPos::new(100, 100));
+        cam.track(WorldPos::new(97, 98));
+        assert_eq!(WorldPos::new(99, 100), cam.position);
 
         // Move right
-        cam.move_to(WorldPos::new(100.0, 100.0));
-        cam.track(WorldPos::new(103.0, 100.0));
-        assert_eq!(WorldPos::new(101.0, 100.0), cam.position);
+        cam.move_to(WorldPos::new(100, 100));
+        cam.track(WorldPos::new(103, 100));
+        assert_eq!(WorldPos::new(101, 100), cam.position);
 
         // Move up
-        cam.move_to(WorldPos::new(100.0, 100.0));
-        cam.track(WorldPos::new(100.0, 103.0));
-        assert_eq!(WorldPos::new(100.0, 101.0), cam.position);
+        cam.move_to(WorldPos::new(100, 100));
+        cam.track(WorldPos::new(100, 103));
+        assert_eq!(WorldPos::new(100, 101), cam.position);
 
         // Move down
-        cam.move_to(WorldPos::new(100.0, 100.0));
-        cam.track(WorldPos::new(100.0, 97.0));
-        assert_eq!(WorldPos::new(100.0, 99.0), cam.position);
+        cam.move_to(WorldPos::new(100, 100));
+        cam.track(WorldPos::new(100, 97));
+        assert_eq!(WorldPos::new(100, 99), cam.position);
     }
 }
